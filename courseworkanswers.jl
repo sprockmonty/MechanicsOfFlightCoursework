@@ -3,9 +3,9 @@ using LinearAlgebra
 using ControlSystems
 using Plots
 using Printf
-plotly()
-# constant definitions
+pgfplots()
 
+# constant definitions
 ρ_∞ = 1.112 
 θ_0 = -2
 V_∞ = 28
@@ -201,4 +201,5 @@ Q = Diagonal([5,0,0,5])
 K = lqr(sys, Q, R)
 P = feedback(sys,K)
 stepplot(P,200, legend = false, ylabel = "sgfgdfgdgdfgdf")
-plot!(ylabel = ["aaaaaaaaaaaa" "bbbbbbb" "ccccccc" "ddddd"], xlabel = ["" "" "" "Time (s)"], title = ["Step Response" "" "" ""], size = [600,600])
+plot!(ylabel = ["V_x (m/s)" "V_z (m/s)" "ω_y (deg/s)" "θ (deg)"], xlabel = ["" "" "" "Time (s)"], title = ["Step Response" "" "" ""], size = [600,600])
+png("Files/MechanicsOfFlightCoursework/q5bstep.png")
