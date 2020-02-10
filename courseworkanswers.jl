@@ -176,7 +176,7 @@ scatter([sppo_freq_k/sppo_freq phug_freq_k/phug_freq], [sppo_damp_k/sppo_damp ph
 
 
 
-# Question 5
+# Question 5a
 Q = C
 
 # starting value
@@ -194,3 +194,11 @@ for i = 2:25
     scatter!([λ_closed[1:2] λ_closed[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, markercolor = :red, labels = ["" ""])
 end
 scatter!([λ[1:2] λ[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, markercolor = :blue, labels = ["open loop poles" ""], markershape = :cross)
+
+# Question 5b
+R = 1
+Q = Diagonal([5,0,0,5])
+K = lqr(sys, Q, R)
+P = feedback(sys,K)
+stepplot(P,200, legend = false, ylabel = "sgfgdfgdgdfgdf")
+plot!(ylabel = ["aaaaaaaaaaaa" "bbbbbbb" "ccccccc" "ddddd"], xlabel = ["" "" "" "Time (s)"], title = ["Step Response" "" "" ""], size = [600,600])
