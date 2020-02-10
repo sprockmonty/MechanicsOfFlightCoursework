@@ -3,8 +3,8 @@ using LinearAlgebra
 using ControlSystems
 using Plots
 using Printf
-pgfplots()
-
+#pgfplots()
+plotly()
 # constant definitions
 ρ_∞ = 1.112 
 θ_0 = -2
@@ -86,6 +86,8 @@ scatter(λ, xlabel="Re(λ)", ylabel="Im(λ)", legend = false)
 # state space
 sys = ss(A,B,C,D)
 stepplot(sys, 200, legend = false)
+plot!(ylabel = ["V_x (m/s)" "V_z (m/s)" "ω_y (deg/s)" "θ (deg)"], xlabel = ["" "" "" "Time (s)"], title = ["Step Response" "" "" ""], size = [600,600])
+
 phugω = imag(λ[4]) # phugiod frequency
 @printf("The phugoid frequency is %f and the time period is %f", phugω, 2 * π / phugω)
 
@@ -200,6 +202,6 @@ R = 1
 Q = Diagonal([5,0,0,5])
 K = lqr(sys, Q, R)
 P = feedback(sys,K)
-stepplot(P,200, legend = false, ylabel = "sgfgdfgdgdfgdf")
+stepplot(P,200, legend = false)
 plot!(ylabel = ["V_x (m/s)" "V_z (m/s)" "ω_y (deg/s)" "θ (deg)"], xlabel = ["" "" "" "Time (s)"], title = ["Step Response" "" "" ""], size = [600,600])
-png("Files/MechanicsOfFlightCoursework/q5bstep.png")
+#png("Files/MechanicsOfFlightCoursework/q5bstep.png")
