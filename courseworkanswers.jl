@@ -95,3 +95,15 @@ A_sr = 0.5 * ρ_∞ * V_∞ * S_t * l_β * C_Lαt * [0 1 l_t 0]
 
 A_k = [A + A_rs * A_sr / (k_β[i] - A_s) for i = 1:length(k_β)] # state matrix with k spring
 λ_k = map((x) -> eigvals(x), A_k)
+sppo_k = begin
+    l = length(λ_k)
+    [[λ_k[i][1] for i = 1:l]; [λ_k[i][2] for i = 1:l]]
+end
+
+phug_k = begin
+    l = length(λ_k)
+    [[λ_k[i][3] for i = 1:l]; [λ_k[i][4] for i = 1:l]]
+end
+# plot poles
+scatter([sppo_k phug_k], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2)
+
