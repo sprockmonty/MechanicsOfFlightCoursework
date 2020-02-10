@@ -157,13 +157,33 @@ A_k = [A + A_rs * A_sr / (k_β[i] - A_s) for i = 1:length(k_β)] # state matrix 
 # get modes
 sppo_k = begin
     l = length(λ_k)
-    [[λ_k[i][1] for i = 1:l]; [λ_k[i][2] for i = 1:l]]
+    [λ_k[i][2] for i = 1:l]
 end
 
 phug_k = begin
     l = length(λ_k)
-    [[λ_k[i][3] for i = 1:l]; [λ_k[i][4] for i = 1:l]]
+    [λ_k[i][4] for i = 1:l]
 end
 
 # plot poles
 scatter([sppo_k phug_k], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false)
+
+# Question 5
+Q = C
+
+# starting value
+
+R=10^( -3.2 + 0.2 * 1 )
+K = lqr(sys, Q, R)
+P = feedback(sys,K)
+λ_closed = pole(P)
+scatter([λ_closed[1:2] λ_closed[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false, markercolor = :red)
+
+for i = 2:25
+    R=10^( -3.2 + 0.2 * i )
+    K = lqr(sys, Q, R)
+    P = feedback(sys,K)
+    λ_closed = pole(P)
+    scatter!([λ_closed[1:2] λ_closed[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false, markercolor = :red)
+end
+scatter!()
