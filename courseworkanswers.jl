@@ -118,6 +118,7 @@ function q3polePlot(λ,λ_ref)
     scatter([λ[:,1][1:2] λ[:,1][3:4]], xlabel="Re(λ)", ylabel="Im(λ)",markercolor = :red, layout = 2, title=["SPPO" "PHUGOID"], labels = ["80%" ""])
     scatter!([λ[:,2][1:2] λ[:,2][3:4]], xlabel="Re(λ)", ylabel="Im(λ)",markercolor = :green, layout = 2, title=["SPPO" "PHUGOID"], labels = ["120%" ""])
     scatter!([λ_ref[1:2] λ_ref[3:4] ], xlabel="Re(λ)", ylabel="Im(λ)",markercolor = :blue, layout = 2, title=["SPPO" "PHUGOID"], labels = ["Unperturbed" ""])
+    scatter!(size = [800,400])
 end
 
 q3polePlot(λ_C_Lαw, λ)
@@ -138,7 +139,7 @@ function q3fdPlot(λ, λ_ref, mcolor, mname)
     scatter!([sppo_freq[2]/sppo_freq[3] phug_freq[2]/phug_freq[3]], [sppo_damp[2]/sppo_damp[3] phug_damp[2]/phug_damp[3]], xlabel="Natural frequency (rad/s)", ylabel="Damping ratio",markercolor = mcolor, layout = 2, title=["SPPO" "PHUGOID"], markershape = :xcross, labels = ["120% "*mname ""])
 end
 
-scatter([1 1], [1 1], xlabel="Natural frequency (rad/s)", ylabel="Damping ratio",markercolor = :black, layout = 2, title=["SPPO" "PHUGOID"], labels = ["Unperturbed" ""])
+scatter([1 1], [1 1], xlabel="Natural frequency (rad/s)", ylabel="Damping ratio",markercolor = :black, layout = 2, title=["SPPO" "PHUGOID"], labels = ["Unperturbed" ""], size = [800,400])
 q3fdPlot(λ_C_Lαw, λ, :blue, "C_Lαw")
 q3fdPlot(λ_C_Lαt, λ, :red, "C_Lαt")
 q3fdPlot(λ_I_yy, λ, :green, "I_yy")
@@ -172,9 +173,9 @@ sppo_damp_k = [abs(real(λ_k[i][1])) / sppo_freq_k[i] for i = 1:kLength]
 phug_damp_k = [abs(real(λ_k[i][3])) / phug_freq_k[i] for i = 1:kLength]
 
 # plot poles
-scatter([sppo_k phug_k], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false)
+scatter([sppo_k phug_k], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false, title=["SPPO" "PHUGOID"], size = [800,400], markercolor = :red)
 # frequency and damping plots
-scatter([sppo_freq_k/sppo_freq phug_freq_k/phug_freq], [sppo_damp_k/sppo_damp phug_damp_k/phug_damp], xlabel="Natural frequency (rad/s)", ylabel="Damping ratio",markercolor = :red, layout = 2, title=["SPPO" "PHUGOID"], legend = false)
+scatter([sppo_freq_k/sppo_freq phug_freq_k/phug_freq], [sppo_damp_k/sppo_damp phug_damp_k/phug_damp], xlabel="Natural frequency (rad/s)", ylabel="Damping ratio",markercolor = :red, layout = 2, title=["SPPO" "PHUGOID"], legend = false, size = [800,400])
 
 
 
@@ -187,7 +188,7 @@ R=10^( -3.2 + 0.2 * 1 )
 K = lqr(sys, Q, R)
 P = feedback(sys,K)
 λ_closed = pole(P)
-scatter([λ_closed[1:2] λ_closed[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, markercolor = :red, labels = ["closed loop poles" ""])
+scatter([λ_closed[1:2] λ_closed[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, markercolor = :red, labels = ["closed loop poles" ""], size = [800,400], title = ["SPPO" "PHUGOID"])
 for i = 2:25
     R=10^( -3.2 + 0.2 * i )
     K = lqr(sys, Q, R)
