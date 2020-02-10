@@ -110,11 +110,37 @@ phugω = imag(λ[4]) # phugiod frequency
            eigvals(getABCD(ρ_∞, θ_0, V_∞*0.8, m, S, l_t, I_yy, S_t, l_w, C_Lαw, C_Lαt, C_Lδt, b, T_0, e, g)[1])';
            eigvals(getABCD(ρ_∞, θ_0, V_∞*1.2, m, S, l_t, I_yy, S_t, l_w, C_Lαw, C_Lαt, C_Lδt, b, T_0, e, g)[1])'
           ]'
-q3plot(λ,λ_ref) = scatter([[λ[:,1][1:2];λ[:,2][1:2]; λ_ref[1:2]] [λ[:,1][3:4];λ[:,2][3:4]; λ_ref[3:4]] ], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false, title=["SPPO" "PHUGOID"])
-q3plot(λ_C_Lαw, λ)
-q3plot(λ_C_Lαt, λ)
-q3plot(λ_I_yy, λ)
-q3plot(λ_V_∞, λ)
+
+# pole plots
+function q3polePlot(λ,λ_ref)
+    scatter([λ[:,1][1:2] λ[:,1][3:4]], xlabel="Re(λ)", ylabel="Im(λ)",markercolor = :red, layout = 2, title=["SPPO" "PHUGOID"])
+    scatter!([λ[:,2][1:2] λ[:,2][3:4]], xlabel="Re(λ)", ylabel="Im(λ)",markercolor = :green, layout = 2, title=["SPPO" "PHUGOID"])
+    scatter!([λ_ref[1:2] λ_ref[3:4] ], xlabel="Re(λ)", ylabel="Im(λ)",markercolor = :blue, layout = 2, title=["SPPO" "PHUGOID"])
+end
+
+q3polePlot(λ_C_Lαw, λ)
+q3polePlot(λ_C_Lαt, λ)
+q3polePlot(λ_I_yy, λ)
+q3polePlot(λ_V_∞, λ)
+
+# freq and damp plots
+
+function q3fdPlot(λ, λ_ref, mcolor, mname)
+    λ = [λ λ_ref]
+    sppo_freq = [sqrt(real(λ[:,i][1])^2 + imag(λ[:,i][1])^2) for i = 1:3]
+    phug_freq = [sqrt(real(λ[:,i][3])^2 + imag(λ[:,i][3])^2) for i = 1:3]
+    sppo_damp = [abs(real(λ[:,i][1])) / sppo_freq[i] for i = 1:3]
+    phug_damp = [abs(real(λ[:,i][3])) / phug_freq[i] for i = 1:3]
+
+    scatter!([sppo_freq[1]/sppo_freq[3] phug_freq[1]/phug_freq[3]], [sppo_damp[1]/sppo_damp[3] phug_damp[1]/phug_damp[3]], xlabel="Natural frequency (rad/s)", ylabel="Damping ratio",markercolor = mcolor, layout = 2, title=["SPPO" "PHUGOID"], markershape = :cross)
+    scatter!([sppo_freq[2]/sppo_freq[3] phug_freq[2]/phug_freq[3]], [sppo_damp[2]/sppo_damp[3] phug_damp[2]/phug_damp[3]], xlabel="Natural frequency (rad/s)", ylabel="Damping ratio",markercolor = mcolor, layout = 2, title=["SPPO" "PHUGOID"], markershape = :xcross)
+end
+
+scatter([1 1], [1 1], xlabel="Natural frequency (rad/s)", ylabel="Damping ratio",markercolor = :black, layout = 2, title=["SPPO" "PHUGOID"])
+q3fdPlot(λ_C_Lαw, λ, :blue, "name")
+q3fdPlot(λ_C_Lαt, λ, :red, "name")
+q3fdPlot(λ_I_yy, λ, :green, "name")
+q3fdPlot(λ_V_∞, λ, :pink, "name")
 
 # Question 4
 l_β = (l_w + l_t) / 2 # position of spring
