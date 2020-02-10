@@ -153,20 +153,28 @@ A_sr = 0.5 * ρ_∞ * V_∞ * S_t * l_β * C_Lαt * [0 1 l_t 0]
 
 A_k = [A + A_rs * A_sr / (k_β[i] - A_s) for i = 1:length(k_β)] # state matrix with k spring
 λ_k = map((x) -> eigvals(x), A_k)
-
+kLength = length(λ_k)
 # get modes
-sppo_k = begin
-    l = length(λ_k)
-    [λ_k[i][2] for i = 1:l]
-end
 
-phug_k = begin
-    l = length(λ_k)
-    [λ_k[i][4] for i = 1:l]
-end
+sppo_k = [λ_k[i][2] for i = 1:kLength]
+phug_k = [λ_k[i][4] for i = 1:kLength]
+
+sppo_freq = sqrt(real(λ[1])^2 + imag(λ[1])^2)
+phug_freq = sqrt(real(λ[3])^2 + imag(λ[3])^2)
+sppo_damp = abs(real(λ[1])) / sppo_freq
+phug_damp = abs(real(λ[3])) / phug_freq
+
+sppo_freq_k = [sqrt(real(λ_k[i][1])^2 + imag(λ_k[i][1])^2) for i = 1:kLength]
+phug_freq_k = [sqrt(real(λ_k[i][3])^2 + imag(λ_k[i][3])^2) for i = 1:kLength]
+sppo_damp_k = [abs(real(λ_k[i][1])) / sppo_freq_k[i] for i = 1:kLength]
+phug_damp_k = [abs(real(λ_k[i][3])) / phug_freq_k[i] for i = 1:kLength]
 
 # plot poles
 scatter([sppo_k phug_k], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false)
+# frequency and damping plots
+scatter([sppo_freq_k/sppo_freq phug_freq_k/phug_freq], [sppo_damp_k/sppo_damp phug_damp_k/phug_damp], xlabel="Natural frequency (rad/s)", ylabel="Damping ratio",markercolor = :red, layout = 2, title=["SPPO" "PHUGOID"], legend = false)
+
+
 
 # Question 5
 Q = C
@@ -177,13 +185,12 @@ R=10^( -3.2 + 0.2 * 1 )
 K = lqr(sys, Q, R)
 P = feedback(sys,K)
 λ_closed = pole(P)
-scatter([λ_closed[1:2] λ_closed[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false, markercolor = :red)
-
+scatter([λ_closed[1:2] λ_closed[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, markercolor = :red, labels = ["closed loop poles" ""])
 for i = 2:25
     R=10^( -3.2 + 0.2 * i )
     K = lqr(sys, Q, R)
     P = feedback(sys,K)
     λ_closed = pole(P)
-    scatter!([λ_closed[1:2] λ_closed[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false, markercolor = :red)
+    scatter!([λ_closed[1:2] λ_closed[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, markercolor = :red, labels = ["" ""])
 end
-scatter!()
+scatter!([λ[1:2] λ[3:4]], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, markercolor = :blue, labels = ["open loop poles" ""], markershape = :cross)
