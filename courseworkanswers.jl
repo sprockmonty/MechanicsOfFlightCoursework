@@ -80,18 +80,41 @@ A,B,C,D = getABCD(ρ_∞, θ_0, V_∞, m, S, l_t, I_yy, S_t, l_w, C_Lαw, C_Lαt
 
 # eigenvalue plots
 λ = eigvals(A)
-scatter(λ, xlabel="Re(λ)", ylabel="Im(λ)")
+scatter(λ, xlabel="Re(λ)", ylabel="Im(λ)", legend = false)
 
 # Question 2
 # state space
 sys = ss(A,B,C,D)
-stepplot(sys, 200)
+stepplot(sys, 200, legend = false)
 phugω = imag(λ[4]) # phugiod frequency
 @printf("The phugoid frequency is %f and the time period is %f", phugω, 2 * π / phugω)
 
 # Question 3
+λ_C_Lαw = [
+           eigvals(getABCD(ρ_∞, θ_0, V_∞, m, S, l_t, I_yy, S_t, l_w, C_Lαw*0.8, C_Lαt, C_Lδt, b, T_0, e, g)[1])';
+           eigvals(getABCD(ρ_∞, θ_0, V_∞, m, S, l_t, I_yy, S_t, l_w, C_Lαw*1.2, C_Lαt, C_Lδt, b, T_0, e, g)[1])'
+          ]'
+
+λ_C_Lαt = [
+           eigvals(getABCD(ρ_∞, θ_0, V_∞, m, S, l_t, I_yy, S_t, l_w, C_Lαw, C_Lαt*0.8, C_Lδt, b, T_0, e, g)[1])';
+           eigvals(getABCD(ρ_∞, θ_0, V_∞, m, S, l_t, I_yy, S_t, l_w, C_Lαw, C_Lαt*1.2, C_Lδt, b, T_0, e, g)[1])'
+          ]'
+
+λ_I_yy = [
+           eigvals(getABCD(ρ_∞, θ_0, V_∞, m, S, l_t, I_yy*0.8, S_t, l_w, C_Lαw, C_Lαt, C_Lδt, b, T_0, e, g)[1])';
+           eigvals(getABCD(ρ_∞, θ_0, V_∞, m, S, l_t, I_yy*1.2, S_t, l_w, C_Lαw, C_Lαt, C_Lδt, b, T_0, e, g)[1])'
+          ]'
 
 
+λ_V_∞ = [
+           eigvals(getABCD(ρ_∞, θ_0, V_∞*0.8, m, S, l_t, I_yy, S_t, l_w, C_Lαw, C_Lαt, C_Lδt, b, T_0, e, g)[1])';
+           eigvals(getABCD(ρ_∞, θ_0, V_∞*1.2, m, S, l_t, I_yy, S_t, l_w, C_Lαw, C_Lαt, C_Lδt, b, T_0, e, g)[1])'
+          ]'
+q3plot(λ,λ_ref) = scatter([[λ[:,1][1:2];λ[:,2][1:2]; λ_ref[1:2]] [λ[:,1][3:4];λ[:,2][3:4]; λ_ref[3:4]] ], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false, title=["SPPO" "PHUGOID"])
+q3plot(λ_C_Lαw, λ)
+q3plot(λ_C_Lαt, λ)
+q3plot(λ_I_yy, λ)
+q3plot(λ_V_∞, λ)
 
 # Question 4
 l_β = (l_w + l_t) / 2 # position of spring
@@ -117,4 +140,4 @@ phug_k = begin
 end
 
 # plot poles
-scatter([sppo_k phug_k], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2)
+scatter([sppo_k phug_k], xlabel="Re(λ)", ylabel="Im(λ)", layout = 2, legend = false)
